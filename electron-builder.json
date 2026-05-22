@@ -29,14 +29,17 @@
     "target": [
       { "target": "nsis", "arch": ["x64"] },
       { "target": "portable", "arch": ["x64"] }
-    ],
-    "artifactName": "${productName}-${version}-${arch}.${ext}"
+    ]
   },
   "nsis": {
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "deleteAppDataOnUninstall": false,
+    "artifactName": "${productName}-${version}-${arch}-setup.${ext}"
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
   },
   "asar": true,
   "asarUnpack": [
