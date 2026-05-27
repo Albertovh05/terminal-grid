@@ -1,6 +1,6 @@
 {
-  "appId": "com.karim.terminalgrid",
-  "productName": "Terminal Grid",
+  "appId": "com.albertovh.grid",
+  "productName": "Grid",
   "directories": {
     "output": "release",
     "buildResources": "build"
@@ -42,6 +42,7 @@
     "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
   },
   "asar": true,
+  "npmRebuild": false,
   "asarUnpack": [
     "node_modules/node-pty/**/*"
   ]
