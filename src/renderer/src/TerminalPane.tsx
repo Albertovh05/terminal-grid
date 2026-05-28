@@ -132,10 +132,13 @@ export function TerminalPane(props: Props) {
     registerTerminal(spec.id, term);
 
     // ⌘C/Ctrl+C copies the selection when there is one, otherwise falls through
-    // as SIGINT. Paste is intentionally NOT handled here — xterm's native paste
-    // (via the Edit-menu role and browser default) already does it once and
-    // honors bracketed-paste mode. Handling ⌘V here too caused double pastes and
-    // auto-running commands on a trailing newline.
+    // as SIGINT. ⌘V/Ctrl+V returns false so xterm never sends the raw ^V
+    // control character to the PTY — Claude Code CLI and other TUI apps break
+    // when they receive ^V ahead of the pasted text. The actual clipboard write
+    // comes from the Electron Edit-menu { role: 'paste' } action, which fires
+    // webContents.paste() → a single DOM paste event → xterm's bracketed-paste-
+    // aware handler → PTY. Returning false here without a manual write avoids
+    // the double-paste that existed before ec34939.
     term.attachCustomKeyEventHandler((ev) => {
       if (ev.type !== 'keydown') return true;
       const mod = ev.metaKey || ev.ctrlKey;
@@ -148,6 +151,9 @@ export function TerminalPane(props: Props) {
           return false; // we handled it
         }
         return true; // no selection — let Ctrl+C reach the shell
+      }
+      if (k === 'v') {
+        return false; // block ^V; paste arrives via Electron menu role
       }
       return true;
     });
